@@ -57,6 +57,26 @@ namespace Tetris
             }
         }
 
+        public void PushLeft()
+        {
+            if (CurrentDownObject.Positions.Any(pos => pos.Y-- == 0 || GameFields[pos.X][pos.Y--] == 1)) return;
+            var positions = CurrentDownObject.Positions;
+            for (int ind = 0; ind < positions.Length; ind++)
+            {
+                positions[ind].Y--;
+            }
+        }
+
+        public void PushRight()
+        {
+            if (CurrentDownObject.Positions.Any(pos => pos.Y++ == Game.Width - 1 || GameFields[pos.X][pos.Y++] == 1)) return;
+            var positions = CurrentDownObject.Positions;
+            for (int ind = 0; ind < positions.Length; ind++)
+            {
+                positions[ind].Y++;
+            }
+        }
+
         public void AddGameObject()
         {
             CheckFilledLines();
@@ -124,6 +144,15 @@ namespace Tetris
                 }
             }
             return removedLines;
+        }
+
+        public void RollCurrentGameObject()
+        {
+            for (int ind = 0; ind < CurrentDownObject.Positions.Length; ind++)
+            {
+                var pos = CurrentDownObject.Positions[ind];
+                (pos.X, pos.Y) = (-pos.Y, pos.X);
+            }
         }
     }
 }

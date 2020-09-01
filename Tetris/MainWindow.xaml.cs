@@ -84,26 +84,20 @@ namespace Tetris
 
         private void Roll_Click(object sender, RoutedEventArgs e)
         {
-            game.DownObject();
+            game.RollCurrentGameObject();
             UpdateView();
         }
 
         private void Left_Click(object sender, RoutedEventArgs e)
         {
-            var positions = game.CurrentDownObject.Positions;
-            for (int ind = 0; ind < positions.Length; ind++)
-            {
-                positions[ind].Y--;
-            }
+            game.PushLeft();
+            UpdateView();
         }
 
         private void Right_Click(object sender, RoutedEventArgs e)
         {
-            var positions = game.CurrentDownObject.Positions;
-            for (int ind = 0; ind < positions.Length; ind++)
-            {
-                positions[ind].Y++;
-            }
+            game.PushRight();
+            UpdateView();
         }
     }
 }
