@@ -14,7 +14,10 @@ namespace Tetris
 
         public const int Height = 20;
         public const int Width = 10;
+
+        public bool isOver = false;
         public List<List<int>> GameFields = new List<List<int>>(20);
+        public int Points = 0;
         public GameObject CurrentDownObject;
 
         public Game()
@@ -57,29 +60,31 @@ namespace Tetris
             }
         }
 
-        public void PushLeft()
+        public bool PushLeft()
         {
-            if (CurrentDownObject.Positions.Any(pos => pos.Y-- == 0 || GameFields[pos.X][pos.Y--] == 1)) return;
+            if (CurrentDownObject.Positions.Any(pos => pos.Y-- == 0 || GameFields[pos.X][pos.Y--] == 1)) return false;
             var positions = CurrentDownObject.Positions;
             for (int ind = 0; ind < positions.Length; ind++)
             {
                 positions[ind].Y--;
             }
+            return true;
         }
 
-        public void PushRight()
+        public bool PushRight()
         {
-            if (CurrentDownObject.Positions.Any(pos => pos.Y++ == Game.Width - 1 || GameFields[pos.X][pos.Y++] == 1)) return;
+            if (CurrentDownObject.Positions.Any(pos => pos.Y++ == Game.Width - 1 || GameFields[pos.X][pos.Y++] == 1)) return false;
             var positions = CurrentDownObject.Positions;
             for (int ind = 0; ind < positions.Length; ind++)
             {
                 positions[ind].Y++;
             }
+            return true;
         }
 
         public void AddGameObject()
         {
-            CheckFilledLines();
+            this.Points += 100 * CheckFilledLines();
             switch (rnd.Next(0, 5))
             {
                 case 0:
@@ -132,26 +137,25 @@ namespace Tetris
         /// </summary>
         public int CheckFilledLines()
         {
+            int count = 0;
             var updatedList = new List<List<int>>(20);
-            var removedLines = 0;
             for (int x = 0; x < Game.Height; x++)
             {
                 if (GameFields[x].All(num => num == 1))
                 {
                     GameFields.Remove(GameFields[x]);
-                    removedLines++;
+                    count += 1;
                     GameFields.Insert(0, new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
                 }
             }
-            return removedLines;
+            return count;
         }
 
         public void RollCurrentGameObject()
         {
             for (int ind = 0; ind < CurrentDownObject.Positions.Length; ind++)
             {
-                var pos = CurrentDownObject.Positions[ind];
-                (pos.X, pos.Y) = (-pos.Y, pos.X);
+                (CurrentDownObject.Positions[ind].Y, CurrentDownObject.Positions[ind].X) = (CurrentDownObject.Positions[ind].X, CurrentDownObject.Positions[ind].Y);
             }
         }
     }

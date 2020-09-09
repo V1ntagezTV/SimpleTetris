@@ -12,7 +12,7 @@
         <Button Click="Roll_Click" Content="Roll" HorizontalAlignment="Left" Margin="100,521,0,0" VerticalAlignment="Top" Width="70"/>
         <Button Click="Right_Click" Content="Right" HorizontalAlignment="Left" Margin="190,521,0,0" VerticalAlignment="Top" Width="70"/>
         <TextBlock HorizontalAlignment="Left" Margin="275,99,0,0" TextWrapping="Wrap" Text="Score" VerticalAlignment="Top"/>
-        <TextBlock Name="TB_GameScore" Background="AntiqueWhite" HorizontalAlignment="Left" Height="16" Margin="315,98,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="63"/>
+        <TextBlock Name="TB_GameScore" TextAlignment="Center" Background="AntiqueWhite" HorizontalAlignment="Left" Height="16" Margin="315,98,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="63"/>
 
         <Grid x:Name="GameGrid" Background="AntiqueWhite" HorizontalAlignment="Left" Height="486" Margin="10,10,0,0" VerticalAlignment="Top" Width="250">
             <Grid.ColumnDefinitions>
@@ -50,5 +50,7 @@
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
         </Grid>
+        <TextBlock HorizontalAlignment="Left" Margin="275,298,0,0" TextWrapping="Wrap" Text="History" VerticalAlignment="Top"/>
+        <ListBox Name="LB_History" HorizontalAlignment="Left" Height="177" Margin="275,319,0,0" VerticalAlignment="Top" Width="138"/>
     </Grid>
 </Window>

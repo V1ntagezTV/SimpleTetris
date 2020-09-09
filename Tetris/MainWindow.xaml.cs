@@ -38,9 +38,10 @@ namespace Tetris
         {
             _ = Task.Run(async () =>
             {
-                while (true)
+                while (!game.isOver)
                 {
                     game.DownObject();
+                    UpdateScore(game.Points);
                     await UpdateView();
                     Thread.Sleep(500);
                 }
@@ -90,14 +91,24 @@ namespace Tetris
 
         private void Left_Click(object sender, RoutedEventArgs e)
         {
-            game.PushLeft();
+            if (game.PushLeft()) UpdateHistory("Move left.");
             UpdateView();
         }
 
         private void Right_Click(object sender, RoutedEventArgs e)
         {
-            game.PushRight();
+            if (game.PushRight()) UpdateHistory("Move right.");
             UpdateView();
+        }
+
+        private void UpdateHistory(string news)
+        {
+            LB_History.Items.Add(new TextBlock() { Text = news });
+        }
+
+        private void UpdateScore(int points)
+        {
+            TB_GameScore.Dispatcher.Invoke(() => TB_GameScore.Text = $"{ points }");
         }
     }
 }
