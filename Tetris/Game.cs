@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Security;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace Tetris
 {
@@ -116,8 +112,8 @@ namespace Tetris
                     CurrentDownObject.Positions = new ObjectPositions[4];
                     CurrentDownObject.Positions[0] = new ObjectPositions() { X = 0, Y = 4 };
                     CurrentDownObject.Positions[1] = new ObjectPositions() { X = 1, Y = 4 };
-                    CurrentDownObject.Positions[2] = new ObjectPositions() { X = 2, Y = 4 };
                     CurrentDownObject.Positions[3] = new ObjectPositions() { X = 1, Y = 5 };
+                    CurrentDownObject.Positions[2] = new ObjectPositions() { X = 2, Y = 4 };
                     break;
                 case 4:
                     CurrentDownObject = new GameObject(EGameObjectType.Z_form);
@@ -155,7 +151,9 @@ namespace Tetris
         {
             for (int ind = 0; ind < CurrentDownObject.Positions.Length; ind++)
             {
-                (CurrentDownObject.Positions[ind].Y, CurrentDownObject.Positions[ind].X) = (CurrentDownObject.Positions[ind].X, CurrentDownObject.Positions[ind].Y);
+                var swapValue = CurrentDownObject.Positions[ind].Y;
+                CurrentDownObject.Positions[ind].Y = CurrentDownObject.Positions[ind].X;
+                CurrentDownObject.Positions[ind].X = Width - swapValue;
             }
         }
     }
