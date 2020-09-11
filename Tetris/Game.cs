@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Tetris
 {
@@ -14,7 +15,7 @@ namespace Tetris
         public bool isOver = false;
         public List<List<int>> GameFields = new List<List<int>>(20);
         public int Points = 0;
-        public GameObject CurrentDownObject;
+        public Figure FallingFigure;
 
         public Game()
         {
@@ -25,104 +26,85 @@ namespace Tetris
             AddGameObject(); // First game object.
         }
 
-        public void AddInFieldsGameObject(GameObject gameObject)
+        public void AddInFieldsGameFigure(Figure figure)
         {
-            for (int ind = 0; ind < gameObject.Positions.Length; ind++)
-            {
-                var pos = gameObject.Positions[ind];
-                GameFields[pos.X][pos.Y] = 1;
-            }
+            //for (int row = 0; row < figure.Positions.Length; row++)
+            //{
+            //    for (int column = 0; column < figure.Positions[row].Length; row++)
+            //    {
+            //        if (figure.Positions[row])
+            //    }
+            //}
         }
 
         public void DownObject()
         {
-            if (CurrentDownObject.Positions.Any(pos => pos.X == 19))
-            {
-                AddInFieldsGameObject(CurrentDownObject);
-                AddGameObject();
-                CurrentDownObject.isStop = true;
-                return;
-            }
-            if (CurrentDownObject.Positions.Any(pos => GameFields[pos.X + 1][pos.Y] == 1))
-            {
-                AddInFieldsGameObject(CurrentDownObject);
-                AddGameObject();
-                CurrentDownObject.isStop = true;
-                return;
-            }
-            for (int ind = 0; ind < GameObject.size; ind++)
-            {
-                CurrentDownObject.Positions[ind].X++;
-            }
+            //if (FallingFigure.Positions.Any(row => row.Any(num => GameFields[]) ))
+            //{
+            //    AddInFieldsGameFigure(FallingFigure);
+            //    AddGameObject();
+            //    FallingFigure.isStop = true;
+            //    return;
+            //}
+            //if (FallingFigure.Positions.Any(pos => GameFields[pos.X + 1][pos.Y] == 1))
+            //{
+            //    AddInFieldsGameFigure(FallingFigure);
+            //    AddGameObject();
+            //    FallingFigure.isStop = true;
+            //    return;
+            //}
+            if (FallingFigure.CenterHeight + 1 == Height) { return; }
+
+            FallingFigure.CenterHeight++;
         }
 
         public bool PushLeft()
         {
-            if (CurrentDownObject.Positions.Any(pos => pos.Y-- == 0 || GameFields[pos.X][pos.Y--] == 1)) return false;
-            var positions = CurrentDownObject.Positions;
-            for (int ind = 0; ind < positions.Length; ind++)
+            for (int x = 0, drawX = -1; drawX + 1 < FallingFigure.Positions.Length; drawX++, x++)
             {
-                positions[ind].Y--;
+                for (int y = 0, drawY = -1; drawY + 1 < FallingFigure.Positions[x].Length; drawY++, y++)
+                {
+                    if (FallingFigure.Positions[x][y] == 1 &&
+                        drawY + FallingFigure.CenterWidth == 0)
+                    {
+                        return false;
+                    }
+                }
             }
+            FallingFigure.CenterWidth--;
             return true;
         }
 
         public bool PushRight()
         {
-            if (CurrentDownObject.Positions.Any(pos => pos.Y++ == Game.Width - 1 || GameFields[pos.X][pos.Y++] == 1)) return false;
-            var positions = CurrentDownObject.Positions;
-            for (int ind = 0; ind < positions.Length; ind++)
+            for (int x = 0, drawX = -1; drawX + 1 < FallingFigure.Positions.Length; drawX++, x++)
             {
-                positions[ind].Y++;
+                for (int y = 0, drawY = -1; drawY + 1 < FallingFigure.Positions[x].Length; drawY++, y++)
+                {
+                    if (FallingFigure.Positions[x][y] == 1 &&
+                        drawY + FallingFigure.CenterWidth + 1 == Width)
+                    {
+                        return false;
+                    }
+                }
             }
+            FallingFigure.CenterWidth++;
             return true;
         }
 
         public void AddGameObject()
         {
             this.Points += 100 * CheckFilledLines();
-            switch (rnd.Next(0, 5))
+            switch (0)
             {
                 case 0:
-                    CurrentDownObject = new GameObject(EGameObjectType.Block);
-                    CurrentDownObject.Positions = new ObjectPositions[4];
-                    CurrentDownObject.Positions[0] = new ObjectPositions() { X = 0, Y = 4 };
-                    CurrentDownObject.Positions[1] = new ObjectPositions() { X = 0, Y = 5 };
-                    CurrentDownObject.Positions[2] = new ObjectPositions() { X = 1, Y = 4 };
-                    CurrentDownObject.Positions[3] = new ObjectPositions() { X = 1, Y = 5 };
+                    FallingFigure = new Figure(EFigureType.Triangle);
+                    FallingFigure.Positions[0][1] = 1;
+                    FallingFigure.Positions[1][0] = 1;
+                    FallingFigure.Positions[1][1] = 1;
+                    FallingFigure.Positions[1][2] = 1;
                     break;
-                case 1:
-                    CurrentDownObject = new GameObject(EGameObjectType.L_form);
-                    CurrentDownObject.Positions = new ObjectPositions[4];
-                    CurrentDownObject.Positions[0] = new ObjectPositions() { X = 0, Y = 4 };
-                    CurrentDownObject.Positions[1] = new ObjectPositions() { X = 1, Y = 4 };
-                    CurrentDownObject.Positions[2] = new ObjectPositions() { X = 2, Y = 4 };
-                    CurrentDownObject.Positions[3] = new ObjectPositions() { X = 2, Y = 5 };
-                    break;
-                case 2:
-                    CurrentDownObject = new GameObject(EGameObjectType.Stick);
-                    CurrentDownObject.Positions = new ObjectPositions[4];
-                    CurrentDownObject.Positions[0] = new ObjectPositions() { X = 0, Y = 4 };
-                    CurrentDownObject.Positions[1] = new ObjectPositions() { X = 1, Y = 4 };
-                    CurrentDownObject.Positions[2] = new ObjectPositions() { X = 2, Y = 4 };
-                    CurrentDownObject.Positions[3] = new ObjectPositions() { X = 3, Y = 4 };
-                    break;
-                case 3:
-                    CurrentDownObject = new GameObject(EGameObjectType.Triangle);
-                    CurrentDownObject.Positions = new ObjectPositions[4];
-                    CurrentDownObject.Positions[0] = new ObjectPositions() { X = 0, Y = 4 };
-                    CurrentDownObject.Positions[1] = new ObjectPositions() { X = 1, Y = 4 };
-                    CurrentDownObject.Positions[3] = new ObjectPositions() { X = 1, Y = 5 };
-                    CurrentDownObject.Positions[2] = new ObjectPositions() { X = 2, Y = 4 };
-                    break;
-                case 4:
-                    CurrentDownObject = new GameObject(EGameObjectType.Z_form);
-                    CurrentDownObject.Positions = new ObjectPositions[4];
-                    CurrentDownObject.Positions[0] = new ObjectPositions() { X = 0, Y = 4 };
-                    CurrentDownObject.Positions[1] = new ObjectPositions() { X = 0, Y = 5 };
-                    CurrentDownObject.Positions[2] = new ObjectPositions() { X = 1, Y = 5 };
-                    CurrentDownObject.Positions[3] = new ObjectPositions() { X = 1, Y = 6 };
-                    break;
+
                 default:
                     throw new Exception();
             }
@@ -149,12 +131,19 @@ namespace Tetris
 
         public void RollCurrentGameObject()
         {
-            for (int ind = 0; ind < CurrentDownObject.Positions.Length; ind++)
+            var result = new int[3][] { new int[3], new int[3], new int[3] };
+            if (this.FallingFigure.Type == EFigureType.Block) { return; }
+            if (this.FallingFigure.Type == EFigureType.Stick) { return; }
+
+
+            for (int row = 0; row < FallingFigure.Positions.Length; row++)
             {
-                var swapValue = CurrentDownObject.Positions[ind].Y;
-                CurrentDownObject.Positions[ind].Y = CurrentDownObject.Positions[ind].X;
-                CurrentDownObject.Positions[ind].X = Width - swapValue;
+                for (int column = 0; column < FallingFigure.Positions[row].Length; column++)
+                {
+                    result[column][3 - 1 - row] = FallingFigure.Positions[row][column];
+                }
             }
+            FallingFigure.Positions = result;
         }
     }
 }

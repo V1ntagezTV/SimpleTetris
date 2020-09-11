@@ -66,17 +66,36 @@ namespace Tetris
         }
         private async Task UpdateView()
         {
+            await DrawMap();
+            await DrawFigure();
+        }
+
+        private async Task DrawMap()
+        {
             await Dispatcher.InvokeAsync(() =>
             {
-                for (int indX = 0; indX < ViewButtons.Count; indX++)
+                for (int x = 0; x < ViewButtons.Count; x++)
                 {
-                    for (int indY = 0; indY < ViewButtons[indX].Count; indY++)
+                    for (int y = 0; y < ViewButtons[x].Count; y++)
                     {
-                        ViewButtons[indX][indY].Background = game.GameFields[indX][indY] == 1 ? Brushes.Gray : Brushes.IndianRed;
-                        for (int posInd = 0; posInd < game.CurrentDownObject.Positions.Length; posInd++)
+                        ViewButtons[x][y].Background = game.GameFields[x][y] == 1 ? Brushes.IndianRed : Brushes.Gray;
+                    }
+                }
+            });
+        }
+
+        private async Task DrawFigure()
+        {
+            await Dispatcher.InvokeAsync(() =>
+            {
+                for (int x = 0, drawX = -1; x < game.FallingFigure.Positions.Length; x++, drawX++)
+                {
+                    for (int y = 0, drawY = -1; y < game.FallingFigure.Positions[x].Length; y++, drawY++)
+                    {
+                        if (game.FallingFigure.Positions[x][y] == 1)
                         {
-                            var pos = game.CurrentDownObject.Positions[posInd];
-                            ViewButtons[pos.X][pos.Y].Background = Brushes.Gray;
+                            var figure = game.FallingFigure;
+                            ViewButtons[drawX + figure.CenterHeight][drawY + figure.CenterWidth].Background = Brushes.IndianRed;
                         }
                     }
                 }
