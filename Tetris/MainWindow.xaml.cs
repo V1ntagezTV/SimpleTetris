@@ -78,7 +78,7 @@ namespace Tetris
                 {
                     for (int y = 0; y < ViewButtons[x].Count; y++)
                     {
-                        ViewButtons[x][y].Background = game.GameFields[x][y] == 1 ? Brushes.IndianRed : Brushes.Gray;
+                        ViewButtons[x][y].Background = game.Map[x][y] == 1 ? Brushes.IndianRed : Brushes.Gray;
                     }
                 }
             });
@@ -104,7 +104,7 @@ namespace Tetris
 
         private void Roll_Click(object sender, RoutedEventArgs e)
         {
-            game.RollCurrentGameObject();
+            game.RollCurrentFigure();
             UpdateView();
         }
 

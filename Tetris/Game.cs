@@ -13,7 +13,7 @@ namespace Tetris
         public const int Width = 10;
 
         public bool isOver = false;
-        public List<List<int>> GameFields = new List<List<int>>(20);
+        public List<List<int>> Map = new List<List<int>>(20);
         public int Points = 0;
         public Figure FallingFigure;
 
@@ -21,20 +21,23 @@ namespace Tetris
         {
             for (int ind = 0; ind < Height; ind++)
             {
-                GameFields.Add(new List<int>(10) { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                Map.Add(new List<int>(10) { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
             }
             AddGameObject(); // First game object.
         }
 
         public void AddInFieldsGameFigure(Figure figure)
         {
-            //for (int row = 0; row < figure.Positions.Length; row++)
-            //{
-            //    for (int column = 0; column < figure.Positions[row].Length; row++)
-            //    {
-            //        if (figure.Positions[row])
-            //    }
-            //}
+            for (int x = 0, drawX = -1; x < figure.Positions.Length; x++, drawX++)
+            {
+                for (int y = 0, drawY = -1; y < figure.Positions[x].Length; y++, drawY++)
+                {
+                    if (figure.Positions[x][y] == 1)
+                    {
+                        Map[drawX + figure.CenterHeight][drawY + figure.CenterWidth] = 1;
+                    }
+                }
+            }
         }
 
         public void DownObject()
@@ -53,16 +56,28 @@ namespace Tetris
             //    FallingFigure.isStop = true;
             //    return;
             //}
-            if (FallingFigure.CenterHeight + 1 == Height) { return; }
-
+           // if (FallingFigure.CenterHeight + 1 == Height) { return; }
+            for (int x = 0, drawX = -1; x < FallingFigure.Positions.Length; drawX++, x++)
+            {
+                for (int y = 0, drawY = -1; y < FallingFigure.Positions[x].Length; drawY++, y++)
+                {
+                    if (FallingFigure.Positions[x][y] == 1 && drawX + FallingFigure.CenterHeight == Height - 1 || // Упоролся в самый низ
+                        FallingFigure.Positions[x][y] == 1 && Map[drawX + FallingFigure.CenterHeight + 1][drawY + FallingFigure.CenterWidth] == 1) // упоролся в фигуру
+                    {
+                        AddInFieldsGameFigure(FallingFigure);
+                        AddGameObject();
+                        return;
+                    }
+                }
+            }
             FallingFigure.CenterHeight++;
         }
 
         public bool PushLeft()
         {
-            for (int x = 0, drawX = -1; drawX + 1 < FallingFigure.Positions.Length; drawX++, x++)
+            for (int x = 0, drawX = -1; x < FallingFigure.Positions.Length; drawX++, x++)
             {
-                for (int y = 0, drawY = -1; drawY + 1 < FallingFigure.Positions[x].Length; drawY++, y++)
+                for (int y = 0, drawY = -1; y < FallingFigure.Positions[x].Length; drawY++, y++)
                 {
                     if (FallingFigure.Positions[x][y] == 1 &&
                         drawY + FallingFigure.CenterWidth == 0)
@@ -77,9 +92,9 @@ namespace Tetris
 
         public bool PushRight()
         {
-            for (int x = 0, drawX = -1; drawX + 1 < FallingFigure.Positions.Length; drawX++, x++)
+            for (int x = 0, drawX = -1; x < FallingFigure.Positions.Length; drawX++, x++)
             {
-                for (int y = 0, drawY = -1; drawY + 1 < FallingFigure.Positions[x].Length; drawY++, y++)
+                for (int y = 0, drawY = -1; y < FallingFigure.Positions[x].Length; drawY++, y++)
                 {
                     if (FallingFigure.Positions[x][y] == 1 &&
                         drawY + FallingFigure.CenterWidth + 1 == Width)
@@ -119,17 +134,17 @@ namespace Tetris
             var updatedList = new List<List<int>>(20);
             for (int x = 0; x < Game.Height; x++)
             {
-                if (GameFields[x].All(num => num == 1))
+                if (Map[x].All(num => num == 1))
                 {
-                    GameFields.Remove(GameFields[x]);
+                    Map.Remove(Map[x]);
                     count += 1;
-                    GameFields.Insert(0, new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+                    Map.Insert(0, new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
                 }
             }
             return count;
         }
 
-        public void RollCurrentGameObject()
+        public void RollCurrentFigure()
         {
             var result = new int[3][] { new int[3], new int[3], new int[3] };
             if (this.FallingFigure.Type == EFigureType.Block) { return; }
