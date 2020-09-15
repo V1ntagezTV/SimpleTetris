@@ -19,9 +19,7 @@ namespace Tetris
 
         public Game()
         {
-            Map.Add(new List<int>(10) { 1, 1, 0, 0, 0, 0, 0, 0, 1, 1 });
-
-            for (int ind = 1; ind < HEIGHT; ind++)
+            for (int ind = 0; ind < HEIGHT; ind++)
             {
                 Map.Add(new List<int>(10) { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
             }
