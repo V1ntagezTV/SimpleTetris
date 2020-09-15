@@ -16,6 +16,17 @@
         public Figure(EFigureType type)
         {
             this.Type = type;
+            if (type == EFigureType.Stick)
+            {
+                Positions = new int[4][]
+                {
+                    new int[4],
+                    new int[4],
+                    new int[4],
+                    new int[4],
+                };
+                return;
+            }
             Positions = new int[3][] 
             { 
                 new int[3], 

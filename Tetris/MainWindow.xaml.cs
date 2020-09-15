@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Schema;
 
 namespace Tetris
 {
@@ -25,11 +13,11 @@ namespace Tetris
     /// </summary>
     public partial class MainWindow : Window
     {
-        Game game;
+        Game NewGame;
         List<List<Button>> ViewButtons = new List<List<Button>>();
         public MainWindow()
         {
-            game = new Game();
+            NewGame = new Game();
             InitializeComponent();
             CreateView();
             Start();
@@ -38,10 +26,10 @@ namespace Tetris
         {
             _ = Task.Run(async () =>
             {
-                while (!game.isOver)
+                while (!NewGame.isOver)
                 {
-                    game.DownObject();
-                    UpdateScore(game.Points);
+                    NewGame.DownObject();
+                    UpdateScore(NewGame.Points);
                     await UpdateView();
                     Thread.Sleep(500);
                 }
@@ -51,10 +39,10 @@ namespace Tetris
 
         private void CreateView()
         {
-            for (int x = 0; x < Game.Height; x++)
+            for (int x = 0; x < Game.HEIGHT; x++)
             {
                 ViewButtons.Add(new List<Button>());
-                for (int y = 0; y < Game.Width; y++)
+                for (int y = 0; y < Game.WIDTH; y++)
                 {
                     var button = new Button() { Background = Brushes.IndianRed };
                     ViewButtons[x].Add(button);
@@ -78,7 +66,7 @@ namespace Tetris
                 {
                     for (int y = 0; y < ViewButtons[x].Count; y++)
                     {
-                        ViewButtons[x][y].Background = game.Map[x][y] == 1 ? Brushes.IndianRed : Brushes.Gray;
+                        ViewButtons[x][y].Background = NewGame.Map[x][y] == 1 ? Brushes.Aquamarine : Brushes.Gray;
                     }
                 }
             });
@@ -88,14 +76,14 @@ namespace Tetris
         {
             await Dispatcher.InvokeAsync(() =>
             {
-                for (int x = 0, drawX = -1; x < game.FallingFigure.Positions.Length; x++, drawX++)
+                for (int x = 0, drawX = -1; x < NewGame.FallingFigure.Positions.Length; x++, drawX++)
                 {
-                    for (int y = 0, drawY = -1; y < game.FallingFigure.Positions[x].Length; y++, drawY++)
+                    for (int y = 0, drawY = -1; y < NewGame.FallingFigure.Positions[x].Length; y++, drawY++)
                     {
-                        if (game.FallingFigure.Positions[x][y] == 1)
+                        if (NewGame.FallingFigure.Positions[x][y] == 1)
                         {
-                            var figure = game.FallingFigure;
-                            ViewButtons[drawX + figure.CenterHeight][drawY + figure.CenterWidth].Background = Brushes.IndianRed;
+                            var figure = NewGame.FallingFigure;
+                            ViewButtons[drawX + figure.CenterHeight][drawY + figure.CenterWidth].Background = Brushes.White;
                         }
                     }
                 }
@@ -104,19 +92,19 @@ namespace Tetris
 
         private void Roll_Click(object sender, RoutedEventArgs e)
         {
-            game.RollCurrentFigure();
+            NewGame.RollCurrentFigure();
             UpdateView();
         }
 
         private void Left_Click(object sender, RoutedEventArgs e)
         {
-            if (game.PushLeft()) UpdateHistory("Move left.");
+            if (NewGame.PushLeft()) UpdateHistory("Move left.");
             UpdateView();
         }
 
         private void Right_Click(object sender, RoutedEventArgs e)
         {
-            if (game.PushRight()) UpdateHistory("Move right.");
+            if (NewGame.PushRight()) UpdateHistory("Move right.");
             UpdateView();
         }
 

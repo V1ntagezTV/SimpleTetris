@@ -9,8 +9,8 @@ namespace Tetris
     {
         public static Random rnd = new Random();
 
-        public const int Height = 20;
-        public const int Width = 10;
+        public const int HEIGHT = 20;
+        public const int WIDTH = 10;
 
         public bool isOver = false;
         public List<List<int>> Map = new List<List<int>>(20);
@@ -19,11 +19,13 @@ namespace Tetris
 
         public Game()
         {
-            for (int ind = 0; ind < Height; ind++)
+            Map.Add(new List<int>(10) { 1, 1, 0, 0, 0, 0, 0, 0, 1, 1 });
+
+            for (int ind = 1; ind < HEIGHT; ind++)
             {
                 Map.Add(new List<int>(10) { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
             }
-            AddGameObject(); // First game object.
+            AddGameObject();
         }
 
         public void AddInFieldsGameFigure(Figure figure)
@@ -42,27 +44,12 @@ namespace Tetris
 
         public void DownObject()
         {
-            //if (FallingFigure.Positions.Any(row => row.Any(num => GameFields[]) ))
-            //{
-            //    AddInFieldsGameFigure(FallingFigure);
-            //    AddGameObject();
-            //    FallingFigure.isStop = true;
-            //    return;
-            //}
-            //if (FallingFigure.Positions.Any(pos => GameFields[pos.X + 1][pos.Y] == 1))
-            //{
-            //    AddInFieldsGameFigure(FallingFigure);
-            //    AddGameObject();
-            //    FallingFigure.isStop = true;
-            //    return;
-            //}
-           // if (FallingFigure.CenterHeight + 1 == Height) { return; }
             for (int x = 0, drawX = -1; x < FallingFigure.Positions.Length; drawX++, x++)
             {
                 for (int y = 0, drawY = -1; y < FallingFigure.Positions[x].Length; drawY++, y++)
                 {
-                    if (FallingFigure.Positions[x][y] == 1 && drawX + FallingFigure.CenterHeight == Height - 1 || // Упоролся в самый низ
-                        FallingFigure.Positions[x][y] == 1 && Map[drawX + FallingFigure.CenterHeight + 1][drawY + FallingFigure.CenterWidth] == 1) // упоролся в фигуру
+                    if (FallingFigure.Positions[x][y] == 1 && drawX + FallingFigure.CenterHeight == HEIGHT - 1 ||
+                        FallingFigure.Positions[x][y] == 1 && Map[drawX + FallingFigure.CenterHeight + 1][drawY + FallingFigure.CenterWidth] == 1)
                     {
                         AddInFieldsGameFigure(FallingFigure);
                         AddGameObject();
@@ -78,9 +65,14 @@ namespace Tetris
             for (int x = 0, drawX = -1; x < FallingFigure.Positions.Length; drawX++, x++)
             {
                 for (int y = 0, drawY = -1; y < FallingFigure.Positions[x].Length; drawY++, y++)
-                {
+                {   
                     if (FallingFigure.Positions[x][y] == 1 &&
                         drawY + FallingFigure.CenterWidth == 0)
+                    {
+                        return false;
+                    }
+                    if (FallingFigure.Positions[x][y] == 1 &&
+                        Map[FallingFigure.CenterHeight + drawX][FallingFigure.CenterWidth - 1 + drawY] == 1) 
                     {
                         return false;
                     }
@@ -97,7 +89,12 @@ namespace Tetris
                 for (int y = 0, drawY = -1; y < FallingFigure.Positions[x].Length; drawY++, y++)
                 {
                     if (FallingFigure.Positions[x][y] == 1 &&
-                        drawY + FallingFigure.CenterWidth + 1 == Width)
+                        drawY + FallingFigure.CenterWidth + 1 == WIDTH)
+                    {
+                        return false;
+                    }
+                    if (FallingFigure.Positions[x][y] == 1 &&
+                        Map[FallingFigure.CenterHeight + drawX][FallingFigure.CenterWidth + 1 + drawY] == 1)
                     {
                         return false;
                     }
@@ -110,7 +107,7 @@ namespace Tetris
         public void AddGameObject()
         {
             this.Points += 100 * CheckFilledLines();
-            switch (0)
+            switch (rnd.Next(0, 5))
             {
                 case 0:
                     FallingFigure = new Figure(EFigureType.Triangle);
@@ -118,6 +115,38 @@ namespace Tetris
                     FallingFigure.Positions[1][0] = 1;
                     FallingFigure.Positions[1][1] = 1;
                     FallingFigure.Positions[1][2] = 1;
+                    break;
+
+                case 1:
+                    FallingFigure = new Figure(EFigureType.L_form);
+                    FallingFigure.Positions[0][0] = 1;
+                    FallingFigure.Positions[1][0] = 1;
+                    FallingFigure.Positions[1][1] = 1;
+                    FallingFigure.Positions[1][2] = 1;
+                    break;
+
+                case 2:
+                    FallingFigure = new Figure(EFigureType.Block);
+                    FallingFigure.Positions[0][1] = 1;
+                    FallingFigure.Positions[0][2] = 1;
+                    FallingFigure.Positions[1][1] = 1;
+                    FallingFigure.Positions[1][2] = 1;
+                    break;
+
+                case 3:
+                    FallingFigure = new Figure(EFigureType.Z_form);
+                    FallingFigure.Positions[0][0] = 1;
+                    FallingFigure.Positions[1][0] = 1;
+                    FallingFigure.Positions[1][1] = 1;
+                    FallingFigure.Positions[2][1] = 1;
+                    break;
+
+                case 4:
+                    FallingFigure = new Figure(EFigureType.Stick);
+                    FallingFigure.Positions[2][0] = 1;
+                    FallingFigure.Positions[2][1] = 1;
+                    FallingFigure.Positions[2][2] = 1;
+                    FallingFigure.Positions[2][3] = 1;
                     break;
 
                 default:
@@ -132,7 +161,7 @@ namespace Tetris
         {
             int count = 0;
             var updatedList = new List<List<int>>(20);
-            for (int x = 0; x < Game.Height; x++)
+            for (int x = 0; x < Game.HEIGHT; x++)
             {
                 if (Map[x].All(num => num == 1))
                 {
@@ -146,16 +175,21 @@ namespace Tetris
 
         public void RollCurrentFigure()
         {
-            var result = new int[3][] { new int[3], new int[3], new int[3] };
             if (this.FallingFigure.Type == EFigureType.Block) { return; }
-            if (this.FallingFigure.Type == EFigureType.Stick) { return; }
-
+            int[][] result;
+            if (FallingFigure.Type == EFigureType.Stick)
+            {
+                result = new int[4][] { new int[4], new int[4], new int[4], new int[4] };
+            } else
+            {
+                result = new int[3][] { new int[3], new int[3], new int[3] };
+            }
 
             for (int row = 0; row < FallingFigure.Positions.Length; row++)
             {
-                for (int column = 0; column < FallingFigure.Positions[row].Length; column++)
+                for (int column = FallingFigure.Positions[row].Length - 1; column >= 0; column--)
                 {
-                    result[column][3 - 1 - row] = FallingFigure.Positions[row][column];
+                    result[column][FallingFigure.Positions[row].Length - 1 - row] = FallingFigure.Positions[row][column];
                 }
             }
             FallingFigure.Positions = result;
