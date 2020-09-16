@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Tetris
 {
@@ -104,7 +103,7 @@ namespace Tetris
 
         public void AddGameObject()
         {
-            this.Points += 100 * CheckFilledLines();
+            Points += 100 * CheckFilledLines();
             switch (rnd.Next(0, 5))
             {
                 case 0:
@@ -152,9 +151,6 @@ namespace Tetris
             }
         }
 
-        /// <summary>
-        /// Return removed lines count.
-        /// </summary>
         public int CheckFilledLines()
         {
             int count = 0;
@@ -173,16 +169,24 @@ namespace Tetris
 
         public void RollCurrentFigure()
         {
-            if (this.FallingFigure.Type == EFigureType.Block) { return; }
+            if (FallingFigure.Type == EFigureType.Block) { return; }
             int[][] result;
             if (FallingFigure.Type == EFigureType.Stick)
             {
                 result = new int[4][] { new int[4], new int[4], new int[4], new int[4] };
-            } else
+            } 
+            else
             {
                 result = new int[3][] { new int[3], new int[3], new int[3] };
             }
-
+            if (FallingFigure.CenterWidth == 0)
+            {
+                FallingFigure.CenterWidth++;
+            }
+            if (FallingFigure.CenterWidth == 9)
+            {
+                FallingFigure.CenterWidth--;
+            }
             for (int row = 0; row < FallingFigure.Positions.Length; row++)
             {
                 for (int column = FallingFigure.Positions[row].Length - 1; column >= 0; column--)
